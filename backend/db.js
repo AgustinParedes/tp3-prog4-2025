@@ -10,4 +10,6 @@ export async function conectarDB() {
     password: process.env.DB_PASS, // Contraseña
     database: process.env.DB_NAME, // Esquema
   });
+
+  console.log("Base de datos conectada");
 }
