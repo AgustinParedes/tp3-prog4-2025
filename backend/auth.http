@@ -6,8 +6,8 @@ POST {{url}}/auth/login
 Content-Type: application/json
 
 {
-    "username": "agustin@hotmail.com",
-    "password": "Larioja1234"
+    "email": "walter@gmail.com",
+    "contraseña": "walter1234"
 }
 
 ###
