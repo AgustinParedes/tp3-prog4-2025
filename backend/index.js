@@ -5,7 +5,6 @@ import usuariosRouter from "./usuarios.js";
 import medicosRouter from "./medicos.js";
 import pacientesRouter from "./pacientes.js";
 import turnosRouter from "./turnos.js";
-// import usuariosRolesRouter from "./usuarios-roles.js";
 import authRouter, { authConfig } from "./auth.js";
 
 conectarDB();
@@ -20,7 +19,6 @@ app.use(cors());
 authConfig();
 
 app.get("/", (req, res) => {
-  // Responder con string
   res.send("Gestión de pacientes, médicos y turnos funcionando en puerto " + port);
 });
 
