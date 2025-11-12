@@ -1,13 +1,23 @@
 @url=http://localhost:3000
 
+### Registro de usuario
+POST {{url}}/usuarios
+Content-Type: application/json
+
+{
+    "nombre": "walter",
+    "email": "walter@gmail.com",
+    "contraseña": "walter1234"
+}
+
 ### Login
 # @name login
 POST {{url}}/auth/login
 Content-Type: application/json
 
 {
-    "username": "pepe12",
-    "password": "hola1234"
+    "email": "walter@gmail.com",
+    "contraseña": "walter1234"
 }
 
 ###
@@ -17,31 +27,31 @@ Content-Type: application/json
 GET {{url}}/usuarios
 Authorization: Bearer {{token}}
 
-### Consultar por un usuario
-GET {{url}}/usuarios/1
+### Consultar por un usuario por ID
+GET {{url}}/usuarios/3
+Authorization: Bearer {{token}}
 
-### Consultar por roles de usuario
-GET {{url}}/usuarios/3/roles
-
-### Crear usuario
+### Crear usuario desde sesión admin
 POST {{url}}/usuarios
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-    "username": "elimitar",
-    "apellido": "Algo",
-    "nombre":"Jose",
-    "password": "hola1234"
+    "nombre": "Carlos",
+    "email": "carlos@gmail.com",
+    "contraseña": "hola1234"
 }
 
-### Asignar rol a usuario
-POST {{url}}/usuarios/3/roles
+### Modificar usuario
+PUT {{url}}/usuarios/3
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-    "rolId": 5
+    "nombre": "Carlos Modificado",
+    "email": "carlosmod@example.com"
 }
 
-### Quitar rol a usuario
-DELETE {{url}}/usuarios/3/roles/5
+### Quitar usuario
+DELETE {{url}}/usuarios/3
+Authorization: Bearer {{token}}
