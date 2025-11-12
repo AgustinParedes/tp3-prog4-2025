@@ -1,0 +1,11 @@
+Estás intentando ejecutar las pruebas en el orden incorrecto. El flujo de trabajo completo debe ser:
+
+Registrar Usuario (POST /usuarios) -> Tienes el usuario.
+
+Iniciar Sesión (POST /auth/login) -> Tienes el token.
+
+Crear Médico (POST /medicos con el token) -> Ahora SÍ existe un médico con ID 1.
+
+Crear Paciente (POST /pacientes con el token) -> Ahora SÍ existe un paciente con ID 1.
+
+Crear Turno (POST /turnos con el token, id_medico: 1, id_paciente: 1) -> ¡Ahora la petición funcionará!

@@ -1,0 +1,52 @@
+@url = http://localhost:3000
+
+### Login
+# @name login
+POST {{url}}/auth/login
+Content-Type: application/json
+
+{
+    "email": "walter@gmail.com",
+    "contraseña": "walter1234"
+}
+
+###
+@token = {{login.response.body.token}}
+
+### Obtener todos los pacientes
+GET {{url}}/pacientes
+Authorization: Bearer {{token}}
+
+### Obtener paciente por ID
+GET {{url}}/pacientes/3
+Authorization: Bearer {{token}}
+
+### Crear nuevo paciente
+POST {{url}}/pacientes
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "nombre": "ramon",
+    "apellido": "barrera",
+    "dni": "31691333",
+    "fecha_nacimiento": "1990-05-12",
+    "obra_social": "OSDE"
+}
+
+### Actualizar paciente por ID
+PUT {{url}}/pacientes/3
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "nombre": "Juan",
+    "apellido": "Pérez Modificado",
+    "dni": "30111222",
+    "fecha_nacimiento": "1990-05-12",
+    "obra_social": "Swiss Medical"
+}
+
+### Eliminar paciente por ID
+DELETE {{url}}/pacientes/1
+Authorization: Bearer {{token}}
