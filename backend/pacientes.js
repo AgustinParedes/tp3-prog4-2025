@@ -85,6 +85,14 @@ router.put(
 router.delete("/:id", verificarAutenticacion, validarId, verificarValidaciones, async (req, res) => {
   const id = Number(req.params.id);
 
+  const [turnos] = await db.execute("SELECT 1 FROM turnos WHERE id_paciente = ? LIMIT 1", [id]);
+  if (turnos.length > 0) {
+    return res.status(400).json({
+      success: false,
+      message: "Error: No se puede eliminar al paciente porque tiene turnos asignados.",
+    });
+  }
+
   const [rows] = await db.execute("SELECT * FROM pacientes WHERE id_pacientes=?", [id]);
   if (rows.length === 0)
     return res.status(404).json({
