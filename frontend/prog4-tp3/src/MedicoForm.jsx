@@ -1,15 +1,10 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "./Auth.jsx";
 
-// Este componente recibe 3 props:
-// 1. medico: (null si es para "Crear", un objeto si es para "Modificar")
-// 2. onClose: La función para cerrar este modal
-// 3. onSuccess: La función para refrescar la lista de médicos
 export const MedicoForm = ({ medico, onClose, onSuccess }) => {
   const { fetchAuth } = useAuth();
   const [errores, setErrores] = useState([]);
 
-  // Usamos un estado para todos los campos del formulario
   const [formData, setFormData] = useState({
     nombre: "",
     apellido: "",
@@ -17,7 +12,6 @@ export const MedicoForm = ({ medico, onClose, onSuccess }) => {
     matricula: "",
   });
 
-  // Si nos pasan un médico (para modificar), llenamos el formulario
   useEffect(() => {
     if (medico) {
       setFormData({
@@ -27,7 +21,6 @@ export const MedicoForm = ({ medico, onClose, onSuccess }) => {
         matricula: medico.matricula,
       });
     } else {
-      // Si no hay médico (es "Crear"), reseteamos el form
       setFormData({
         nombre: "",
         apellido: "",
@@ -35,9 +28,8 @@ export const MedicoForm = ({ medico, onClose, onSuccess }) => {
         matricula: "",
       });
     }
-  }, [medico]); // Este efecto se ejecuta cuando la prop 'medico' cambia
+  }, [medico]);
 
-  // Manejador para actualizar el estado del formulario
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -46,7 +38,6 @@ export const MedicoForm = ({ medico, onClose, onSuccess }) => {
     }));
   };
 
-  // Función para encontrar errores de validación (estilo profesor)
   const getError = (field) => {
     return errores
       ?.filter((e) => e.path === field)
@@ -56,13 +47,10 @@ export const MedicoForm = ({ medico, onClose, onSuccess }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrores([]); // Limpiamos errores previos
+    setErrores([]);
 
     try {
-      // Definimos la URL y el Método (Crear vs Modificar)
-      const url = medico
-        ? `http://localhost:3000/medicos/${medico.id_medicos}` // Modificar (PUT)
-        : "http://localhost:3000/medicos"; // Crear (POST)
+      const url = medico ? `http://localhost:3000/medicos/${medico.id_medicos}` : "http://localhost:3000/medicos";
       const method = medico ? "PUT" : "POST";
 
       const response = await fetchAuth(url, {
@@ -75,15 +63,12 @@ export const MedicoForm = ({ medico, onClose, onSuccess }) => {
 
       if (!response.ok) {
         if (response.status === 400) {
-          // Errores de validación del backend
           setErrores(data.errores || []);
         } else {
-          // Otro tipo de error
           throw new Error(data.message || "Error al guardar el médico");
         }
       } else {
-        // ¡Éxito!
-        onSuccess(); // Llamamos a la función para refrescar la lista
+        onSuccess();
       }
     } catch (error) {
       alert(error.message);
@@ -91,11 +76,9 @@ export const MedicoForm = ({ medico, onClose, onSuccess }) => {
   };
 
   return (
-    // Usamos <dialog open> para el modal (estilo profesor)
     <dialog open>
       <article>
         <header>
-          {/* Cerramos el modal llamando a la prop onClose */}
           <a
             href="#close"
             aria-label="Close"
@@ -108,7 +91,6 @@ export const MedicoForm = ({ medico, onClose, onSuccess }) => {
           <h2>{medico ? "Modificar Médico" : "Crear Médico"}</h2>
         </header>
 
-        {/* Formulario */}
         <form onSubmit={handleSubmit}>
           <fieldset>
             <label>
@@ -135,11 +117,7 @@ export const MedicoForm = ({ medico, onClose, onSuccess }) => {
 
           <footer>
             <div className="grid">
-              <button
-                type="button"
-                className="secondary"
-                onClick={() => onClose()} // Botón de cancelar
-              >
+              <button type="button" className="secondary" onClick={() => onClose()}>
                 Cancelar
               </button>
               <button type="submit">{medico ? "Guardar Cambios" : "Crear"}</button>

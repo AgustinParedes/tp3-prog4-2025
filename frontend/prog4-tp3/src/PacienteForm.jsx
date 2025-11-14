@@ -1,15 +1,10 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "./Auth.jsx";
 
-// Este componente es el formulario para "Crear" y "Modificar" Pacientes.
-// 1. paciente: (null si es "Crear", un objeto si es "Modificar")
-// 2. onClose: Función para cerrar el modal
-// 3. onSuccess: Función para refrescar la lista de pacientes
 export const PacienteForm = ({ paciente, onClose, onSuccess }) => {
   const { fetchAuth } = useAuth();
   const [errores, setErrores] = useState([]);
 
-  // Usamos un estado para todos los campos del formulario
   const [formData, setFormData] = useState({
     nombre: "",
     apellido: "",
@@ -18,10 +13,8 @@ export const PacienteForm = ({ paciente, onClose, onSuccess }) => {
     obra_social: "",
   });
 
-  // Si nos pasan un paciente (para modificar), llenamos el formulario
   useEffect(() => {
     if (paciente) {
-      // Formateamos la fecha para el input type="date" (YYYY-MM-DD)
       const fechaFormateada = paciente.fecha_nacimiento ? new Date(paciente.fecha_nacimiento).toISOString().split("T")[0] : "";
 
       setFormData({
@@ -32,7 +25,6 @@ export const PacienteForm = ({ paciente, onClose, onSuccess }) => {
         obra_social: paciente.obra_social,
       });
     } else {
-      // Si no hay paciente (es "Crear"), reseteamos el form
       setFormData({
         nombre: "",
         apellido: "",
@@ -41,9 +33,8 @@ export const PacienteForm = ({ paciente, onClose, onSuccess }) => {
         obra_social: "",
       });
     }
-  }, [paciente]); // Este efecto se ejecuta cuando la prop 'paciente' cambia
+  }, [paciente]);
 
-  // Manejador para actualizar el estado del formulario
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -52,7 +43,6 @@ export const PacienteForm = ({ paciente, onClose, onSuccess }) => {
     }));
   };
 
-  // Función para encontrar errores de validación (estilo profesor)
   const getError = (field) => {
     return errores
       ?.filter((e) => e.path === field)
@@ -62,13 +52,10 @@ export const PacienteForm = ({ paciente, onClose, onSuccess }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrores([]); // Limpiamos errores previos
+    setErrores([]);
 
     try {
-      // Definimos la URL y el Método (Crear vs Modificar)
-      const url = paciente
-        ? `http://localhost:3000/pacientes/${paciente.id_pacientes}` // Modificar (PUT)
-        : "http://localhost:3000/pacientes"; // Crear (POST)
+      const url = paciente ? `http://localhost:3000/pacientes/${paciente.id_pacientes}` : "http://localhost:3000/pacientes";
       const method = paciente ? "PUT" : "POST";
 
       const response = await fetchAuth(url, {
@@ -81,15 +68,12 @@ export const PacienteForm = ({ paciente, onClose, onSuccess }) => {
 
       if (!response.ok) {
         if (response.status === 400) {
-          // Errores de validación del backend
           setErrores(data.errores || []);
         } else {
-          // Otro tipo de error
           throw new Error(data.message || "Error al guardar el paciente");
         }
       } else {
-        // ¡Éxito!
-        onSuccess(); // Llamamos a la función para refrescar la lista
+        onSuccess();
       }
     } catch (error) {
       alert(error.message);
@@ -97,11 +81,9 @@ export const PacienteForm = ({ paciente, onClose, onSuccess }) => {
   };
 
   return (
-    // Usamos <dialog open> para el modal (estilo profesor)
     <dialog open>
       <article>
         <header>
-          {/* Cerramos el modal llamando a la prop onClose */}
           <a
             href="#close"
             aria-label="Close"
@@ -114,7 +96,6 @@ export const PacienteForm = ({ paciente, onClose, onSuccess }) => {
           <h2>{paciente ? "Modificar Paciente" : "Crear Paciente"}</h2>
         </header>
 
-        {/* Formulario */}
         <form onSubmit={handleSubmit}>
           <fieldset>
             <label>
@@ -146,11 +127,7 @@ export const PacienteForm = ({ paciente, onClose, onSuccess }) => {
 
           <footer>
             <div className="grid">
-              <button
-                type="button"
-                className="secondary"
-                onClick={() => onClose()} // Botón de cancelar
-              >
+              <button type="button" className="secondary" onClick={() => onClose()}>
                 Cancelar
               </button>
               <button type="submit">{paciente ? "Guardar Cambios" : "Crear"}</button>

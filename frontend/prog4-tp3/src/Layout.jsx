@@ -3,7 +3,6 @@ import { useAuth } from "./Auth.jsx";
 import { Ingresar } from "./Ingresar.jsx";
 
 export const Layout = () => {
-  // Traemos 'username' del contexto para mostrarlo
   const { isAuthenticated, logout, username } = useAuth();
 
   return (
@@ -16,7 +15,7 @@ export const Layout = () => {
             </Link>
           </li>
         </ul>
-        {/* Mostramos estos enlaces solo si el usuario está autenticado */}
+
         {isAuthenticated && (
           <ul>
             <li>
@@ -33,7 +32,6 @@ export const Layout = () => {
         <ul>
           {isAuthenticated ? (
             <>
-              {/* Mostramos el nombre de usuario */}
               <li>
                 <span role="button" className="contrast outline">
                   Hola, {username}
@@ -47,7 +45,6 @@ export const Layout = () => {
             </>
           ) : (
             <>
-              {/* Mostramos Registro e Ingresar si NO está autenticado */}
               <li>
                 <Link to="/registro" role="button" className="contrast">
                   Registrarse
@@ -61,7 +58,6 @@ export const Layout = () => {
         </ul>
       </nav>
 
-      {/* El Outlet renderiza la ruta hija (Home, Pacientes, etc.) */}
       <Outlet />
     </main>
   );

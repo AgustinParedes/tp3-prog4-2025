@@ -1,17 +1,15 @@
 import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "./Auth.jsx";
-import { TurnoForm } from "./TurnoForm.jsx"; // Importamos el formulario
+import { TurnoForm } from "./TurnoForm.jsx";
 
 export const Turnos = () => {
   const { fetchAuth } = useAuth();
   const [turnos, setTurnos] = useState([]);
 
-  // Estados para manejar el modal
   const [showModal, setShowModal] = useState(false);
-  // 'null' para "Crear", o un objeto turno para "Modificar"
+
   const [selectedTurno, setSelectedTurno] = useState(null);
 
-  // Función para obtener la lista de turnos
   const fetchTurnos = useCallback(async () => {
     try {
       const response = await fetchAuth("http://localhost:3000/turnos");
@@ -27,12 +25,10 @@ export const Turnos = () => {
     }
   }, [fetchAuth]);
 
-  // Cargar los turnos al iniciar el componente
   useEffect(() => {
     fetchTurnos();
   }, [fetchTurnos]);
 
-  // Función para eliminar un turno
   const handleDelete = async (id) => {
     if (window.confirm("¿Está seguro de que desea eliminar este turno?")) {
       try {
@@ -42,7 +38,7 @@ export const Turnos = () => {
         const data = await response.json();
 
         if (response.ok && data.success) {
-          fetchTurnos(); // Refrescamos la lista
+          fetchTurnos();
         } else {
           throw new Error(data.message || "Error al eliminar el turno");
         }
@@ -52,34 +48,30 @@ export const Turnos = () => {
     }
   };
 
-  // Funciones para abrir los modales
   const handleShowCreateModal = () => {
-    setSelectedTurno(null); // 'null' significa "Crear"
+    setSelectedTurno(null);
     setShowModal(true);
   };
 
   const handleShowEditModal = (turno) => {
-    setSelectedTurno(turno); // Pasamos el objeto turno
+    setSelectedTurno(turno);
     setShowModal(true);
   };
 
-  // Función que se pasa al formulario para cerrar y refrescar
   const handleSuccess = () => {
     setShowModal(false);
     fetchTurnos();
   };
 
-  // Función simple para formatear la fecha
   const formatDate = (dateString) => {
     if (!dateString) return "N/A";
     const date = new Date(dateString);
     return new Intl.DateTimeFormat("es-AR", { timeZone: "UTC" }).format(date);
   };
 
-  // Función para formatear la hora (HH:MM)
   const formatTime = (timeString) => {
     if (!timeString) return "N/A";
-    return timeString.substring(0, 5); // Corta "10:30:00" a "10:30"
+    return timeString.substring(0, 5);
   };
 
   return (
@@ -108,7 +100,7 @@ export const Turnos = () => {
                 <td>{turno.id_turnos}</td>
                 <td>{formatDate(turno.fecha)}</td>
                 <td>{formatTime(turno.hora)}</td>
-                {/* El backend nos devuelve estos nombres ya unidos */}
+
                 <td>
                   {turno.paciente_nombre} {turno.paciente_apellido}
                 </td>
@@ -131,7 +123,6 @@ export const Turnos = () => {
         </table>
       </div>
 
-      {/* Renderizamos el modal (formulario) solo si showModal es true */}
       {showModal && <TurnoForm turno={selectedTurno} onClose={() => setShowModal(false)} onSuccess={handleSuccess} />}
     </article>
   );

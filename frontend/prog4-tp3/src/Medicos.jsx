@@ -1,17 +1,15 @@
 import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "./Auth.jsx";
-import { MedicoForm } from "./MedicoForm.jsx"; // Importamos el formulario
+import { MedicoForm } from "./MedicoForm.jsx";
 
 export const Medicos = () => {
   const { fetchAuth } = useAuth();
   const [medicos, setMedicos] = useState([]);
 
-  // Estados para manejar el modal
   const [showModal, setShowModal] = useState(false);
-  // 'null' para "Crear", o un objeto médico para "Modificar"
+
   const [selectedMedico, setSelectedMedico] = useState(null);
 
-  // Función para obtener la lista de médicos (estilo profesor)
   const fetchMedicos = useCallback(async () => {
     try {
       const response = await fetchAuth("http://localhost:3000/medicos");
@@ -27,12 +25,10 @@ export const Medicos = () => {
     }
   }, [fetchAuth]);
 
-  // Cargar los médicos al iniciar el componente
   useEffect(() => {
     fetchMedicos();
   }, [fetchMedicos]);
 
-  // Función para eliminar un médico
   const handleDelete = async (id) => {
     if (window.confirm("¿Está seguro de que desea eliminar este médico?")) {
       try {
@@ -42,7 +38,7 @@ export const Medicos = () => {
         const data = await response.json();
 
         if (response.ok && data.success) {
-          fetchMedicos(); // Refrescamos la lista
+          fetchMedicos();
         } else {
           throw new Error(data.message || "Error al eliminar el médico");
         }
@@ -52,18 +48,16 @@ export const Medicos = () => {
     }
   };
 
-  // Funciones para abrir los modales
   const handleShowCreateModal = () => {
-    setSelectedMedico(null); // 'null' significa "Crear"
+    setSelectedMedico(null);
     setShowModal(true);
   };
 
   const handleShowEditModal = (medico) => {
-    setSelectedMedico(medico); // Pasamos el objeto médico
+    setSelectedMedico(medico);
     setShowModal(true);
   };
 
-  // Función que se pasa al formulario para cerrar y refrescar
   const handleSuccess = () => {
     setShowModal(false);
     fetchMedicos();
@@ -74,7 +68,6 @@ export const Medicos = () => {
       <h2>Gestión de Médicos</h2>
       <button onClick={handleShowCreateModal}>Crear Nuevo Médico</button>
 
-      {/* La tabla de médicos */}
       <table>
         <thead>
           <tr>
@@ -107,7 +100,6 @@ export const Medicos = () => {
         </tbody>
       </table>
 
-      {/* Renderizamos el modal (formulario) solo si showModal es true */}
       {showModal && <MedicoForm medico={selectedMedico} onClose={() => setShowModal(false)} onSuccess={handleSuccess} />}
     </article>
   );

@@ -39,7 +39,7 @@ router.get("/:id", verificarAutenticacion, validarId, verificarValidaciones, asy
 });
 
 // crear nuevo turno
-router.post("/", verificarAutenticacion, body("id_paciente").isInt({ min: 1 }), body("id_medico").isInt({ min: 1 }), body("fecha").isISO8601(), body("hora").matches(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/), body("observaciones").optional().isString().isLength({ max: 255 }), verificarValidaciones, async (req, res) => {
+router.post("/", verificarAutenticacion, body("id_paciente").isInt({ min: 1 }), body("id_medico").isInt({ min: 1 }), body("fecha").isISO8601(), body("hora").isTime(), body("observaciones").optional().isString().isLength({ max: 255 }), verificarValidaciones, async (req, res) => {
   const { id_paciente, id_medico, fecha, hora, observaciones } = req.body;
   await db.execute("INSERT INTO turnos (id_paciente, id_medico, fecha, hora, estado, observaciones) VALUES (?,?,?,?, 'pendiente', ?)", [id_paciente, id_medico, fecha, hora, observaciones || null]);
 

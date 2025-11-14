@@ -1,17 +1,15 @@
 import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "./Auth.jsx";
-import { PacienteForm } from "./PacienteForm.jsx"; // Importamos el formulario
+import { PacienteForm } from "./PacienteForm.jsx";
 
 export const Pacientes = () => {
   const { fetchAuth } = useAuth();
   const [pacientes, setPacientes] = useState([]);
 
-  // Estados para manejar el modal
   const [showModal, setShowModal] = useState(false);
-  // 'null' para "Crear", o un objeto paciente para "Modificar"
+
   const [selectedPaciente, setSelectedPaciente] = useState(null);
 
-  // Función para obtener la lista de pacientes
   const fetchPacientes = useCallback(async () => {
     try {
       const response = await fetchAuth("http://localhost:3000/pacientes");
@@ -27,12 +25,10 @@ export const Pacientes = () => {
     }
   }, [fetchAuth]);
 
-  // Cargar los pacientes al iniciar el componente
   useEffect(() => {
     fetchPacientes();
   }, [fetchPacientes]);
 
-  // Función para eliminar un paciente
   const handleDelete = async (id) => {
     if (window.confirm("¿Está seguro de que desea eliminar este paciente?")) {
       try {
@@ -42,7 +38,7 @@ export const Pacientes = () => {
         const data = await response.json();
 
         if (response.ok && data.success) {
-          fetchPacientes(); // Refrescamos la lista
+          fetchPacientes();
         } else {
           throw new Error(data.message || "Error al eliminar el paciente");
         }
@@ -52,24 +48,21 @@ export const Pacientes = () => {
     }
   };
 
-  // Funciones para abrir los modales
   const handleShowCreateModal = () => {
-    setSelectedPaciente(null); // 'null' significa "Crear"
+    setSelectedPaciente(null);
     setShowModal(true);
   };
 
   const handleShowEditModal = (paciente) => {
-    setSelectedPaciente(paciente); // Pasamos el objeto paciente
+    setSelectedPaciente(paciente);
     setShowModal(true);
   };
 
-  // Función que se pasa al formulario para cerrar y refrescar
   const handleSuccess = () => {
     setShowModal(false);
     fetchPacientes();
   };
 
-  // Función simple para formatear la fecha
   const formatDate = (dateString) => {
     if (!dateString) return "N/A";
     const date = new Date(dateString);
@@ -81,7 +74,6 @@ export const Pacientes = () => {
       <h2>Gestión de Pacientes</h2>
       <button onClick={handleShowCreateModal}>Crear Nuevo Paciente</button>
 
-      {/* La tabla de pacientes */}
       <table>
         <thead>
           <tr>
@@ -116,7 +108,6 @@ export const Pacientes = () => {
         </tbody>
       </table>
 
-      {/* Renderizamos el modal (formulario) solo si showModal es true */}
       {showModal && <PacienteForm paciente={selectedPaciente} onClose={() => setShowModal(false)} onSuccess={handleSuccess} />}
     </article>
   );
