@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState, useEffect } from "react";
 
 const AuthContext = createContext(null);
@@ -100,8 +101,4 @@ export const AuthPage = ({ children }) => {
   }
 
   return children;
-};
-
-export const AuthRol = ({ rol, children }) => {
-  return null;
 };
