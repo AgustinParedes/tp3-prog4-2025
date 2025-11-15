@@ -32,9 +32,9 @@ router.post(
   body("email").isEmail().isLength({ max: 100 }),
   body("contraseña").isStrongPassword({
     minLength: 8,
-    minLowercase: 1,
-    minUppercase: 1,
-    minNumbers: 1,
+    minLowercase: 0,
+    minUppercase: 0,
+    minNumbers: 0,
     minSymbols: 0,
   }),
   verificarValidaciones,
